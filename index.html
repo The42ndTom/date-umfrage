@@ -1,0 +1,499 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#fff5f7">
+  <meta name="description" content="Eine kleine Einladung mit einer wichtigen Frage. ❤️">
+  <title>Eine kleine Frage für dich ❤️</title>
+  <style>
+    :root {
+      --bg1: #fff8fa;
+      --bg2: #ffe8ef;
+      --card: rgba(255,255,255,.83);
+      --text: #33242a;
+      --muted: #8b6e78;
+      --pink: #ee6f98;
+      --pink2: #ff9ebb;
+      --pink-dark: #d95683;
+      --line: rgba(160, 100, 120, .16);
+      --shadow: 0 22px 60px rgba(184, 79, 112, .18);
+    }
+
+    * { box-sizing: border-box; }
+    html, body { min-height: 100%; }
+    body {
+      margin: 0;
+      min-height: 100dvh;
+      display: grid;
+      place-items: center;
+      padding: max(18px, env(safe-area-inset-top)) 16px max(18px, env(safe-area-inset-bottom));
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 15% 10%, rgba(255,255,255,.95) 0 6%, transparent 22%),
+        radial-gradient(circle at 85% 18%, rgba(255,255,255,.82) 0 5%, transparent 21%),
+        linear-gradient(145deg, var(--bg1), var(--bg2));
+      overflow-x: hidden;
+    }
+
+    body::before, body::after {
+      content: "";
+      position: fixed;
+      width: 240px;
+      height: 240px;
+      border-radius: 50%;
+      background: rgba(255,255,255,.26);
+      filter: blur(10px);
+      pointer-events: none;
+      z-index: 0;
+    }
+    body::before { left: -120px; top: 8%; }
+    body::after { right: -120px; bottom: 5%; }
+
+    .app { width: min(100%, 560px); position: relative; z-index: 2; }
+
+    .card {
+      position: relative;
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,.8);
+      border-radius: 30px;
+      background: var(--card);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      box-shadow: var(--shadow);
+      padding: 30px 22px 24px;
+    }
+
+    .topline {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 18px;
+      color: var(--muted);
+      font-size: 12px;
+      letter-spacing: .02em;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 7px 10px;
+      background: rgba(255,255,255,.72);
+    }
+
+    .progress { width: 104px; height: 6px; border-radius: 99px; background: rgba(190, 110, 140, .12); overflow: hidden; }
+    .progress > i { display: block; height: 100%; width: 20%; border-radius: inherit; background: linear-gradient(90deg, var(--pink), var(--pink2)); transition: width .4s ease; }
+
+    .screen { display: none; animation: screenIn .45s ease both; }
+    .screen.active { display: block; }
+    @keyframes screenIn { from { opacity: 0; transform: translateY(10px) scale(.985); } to { opacity: 1; transform: translateY(0) scale(1); } }
+
+    .hero { text-align: center; padding: 12px 4px 4px; }
+    .heart {
+      width: 84px;
+      height: 84px;
+      margin: 0 auto 18px;
+      display: grid;
+      place-items: center;
+      border-radius: 28px;
+      background: linear-gradient(145deg, #fff, #ffe9ef);
+      box-shadow: 0 18px 35px rgba(226, 96, 135, .14), inset 0 0 0 1px rgba(217, 86, 131, .08);
+      font-size: 40px;
+      animation: floatHeart 3.4s ease-in-out infinite;
+    }
+    @keyframes floatHeart { 0%,100% { transform: translateY(0) rotate(-2deg); } 50% { transform: translateY(-8px) rotate(2deg); } }
+
+    h1 { margin: 0; font-size: clamp(28px, 7vw, 39px); line-height: 1.08; letter-spacing: -.035em; }
+    .lead { margin: 12px auto 0; max-width: 430px; color: var(--muted); line-height: 1.55; font-size: 15px; }
+
+    .question {
+      margin-top: 28px;
+      font-weight: 750;
+      font-size: 22px;
+      letter-spacing: -.02em;
+    }
+
+    .button-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 18px; }
+    button {
+      -webkit-tap-highlight-color: transparent;
+      appearance: none;
+      border: 0;
+      min-height: 54px;
+      border-radius: 18px;
+      padding: 14px 16px;
+      font: inherit;
+      font-weight: 750;
+      cursor: pointer;
+      transition: transform .18s ease, box-shadow .18s ease, background .18s ease, opacity .18s ease;
+    }
+    button:active { transform: scale(.97); }
+    .primary {
+      color: white;
+      background: linear-gradient(135deg, var(--pink), var(--pink-dark));
+      box-shadow: 0 12px 24px rgba(217, 86, 131, .25);
+    }
+    .primary:hover { transform: translateY(-2px); box-shadow: 0 15px 28px rgba(217, 86, 131, .3); }
+    .secondary {
+      color: var(--text);
+      background: rgba(255,255,255,.74);
+      border: 1px solid rgba(160, 100, 120, .12);
+      box-shadow: 0 8px 18px rgba(106, 53, 73, .06);
+    }
+    .ghost { color: var(--pink-dark); background: rgba(238,111,152,.08); }
+
+    #noStage {
+      position: relative;
+      min-height: 150px;
+      margin-top: 12px;
+      border-radius: 24px;
+      border: 1px dashed rgba(185, 88, 119, .17);
+      background: rgba(255,255,255,.35);
+      overflow: hidden;
+    }
+    #noButton {
+      position: absolute;
+      left: 50%; top: 50%;
+      transform: translate(-50%, -50%);
+      min-width: 140px;
+      z-index: 3;
+      touch-action: manipulation;
+    }
+    .hint { text-align:center; color:var(--muted); font-size:12px; margin: 10px 0 0; }
+
+    .mini-title { margin: 3px 0 4px; font-size: 25px; letter-spacing: -.03em; }
+    .mini-text { color: var(--muted); margin: 0 0 20px; line-height: 1.5; font-size: 14px; }
+
+    .choices { display: grid; gap: 10px; }
+    .choice {
+      width: 100%;
+      text-align: left;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      color: var(--text);
+      background: rgba(255,255,255,.75);
+      border: 1px solid var(--line);
+      box-shadow: none;
+    }
+    .choice:hover { transform: translateY(-1px); border-color: rgba(217,86,131,.25); }
+    .choice.selected { border-color: rgba(217,86,131,.58); background: #fff5f8; box-shadow: 0 9px 20px rgba(217,86,131,.1); }
+    .choice .left { display: flex; align-items: center; gap: 11px; }
+    .icon { width: 35px; height: 35px; display:grid; place-items:center; border-radius: 12px; background: #fff; box-shadow: inset 0 0 0 1px rgba(190, 110, 140, .1); font-size: 18px; flex: 0 0 auto; }
+    .check { width: 22px; height: 22px; border-radius: 50%; display:grid; place-items:center; background: #f7d9e3; color: transparent; font-size: 12px; font-weight: 900; flex: 0 0 auto; }
+    .choice.selected .check { background: var(--pink); color: white; }
+
+    .nav { display:flex; gap:10px; margin-top: 16px; }
+    .nav button { flex:1; }
+
+    .summary {
+      margin-top: 8px;
+      border: 1px solid rgba(217,86,131,.16);
+      background: linear-gradient(145deg, rgba(255,255,255,.85), rgba(255,242,247,.82));
+      padding: 16px;
+      border-radius: 22px;
+    }
+    .summary h3 { margin: 0 0 10px; font-size: 17px; }
+    .summary-line { display:flex; justify-content:space-between; gap:16px; padding: 9px 0; border-bottom: 1px solid rgba(190,110,140,.1); font-size: 14px; }
+    .summary-line:last-child { border-bottom: 0; }
+    .summary-line span:first-child { color: var(--muted); }
+    .summary-line span:last-child { font-weight: 750; text-align:right; }
+
+    .final-heart { font-size: 74px; text-align:center; animation: beat 1.05s ease-in-out infinite; margin: 2px 0 10px; }
+    @keyframes beat { 0%,100% { transform: scale(1); } 50% { transform: scale(1.12); } }
+
+    .nope {
+      text-align: center;
+      padding: 35px 6px 12px;
+    }
+    .nope-icon { font-size: 58px; margin-bottom: 8px; }
+
+    #hearts, #confetti { position: fixed; inset: 0; pointer-events:none; overflow:hidden; z-index:10; }
+    .floating-heart { position:absolute; font-size: var(--size); opacity: 0; animation: rise var(--duration) linear forwards; }
+    @keyframes rise { 0% { transform: translateY(20px) scale(.6) rotate(0deg); opacity:0; } 15% { opacity:.8; } 100% { transform: translateY(-110vh) scale(1.15) rotate(28deg); opacity:0; } }
+    .confetti-piece { position:absolute; width:8px; height:14px; border-radius:3px; animation: confettiFall 1.9s cubic-bezier(.15,.7,.2,1) forwards; }
+    @keyframes confettiFall { 0% { transform: translate3d(0,-10vh,0) rotate(0); opacity:1; } 100% { transform: translate3d(var(--dx),110vh,0) rotate(var(--rot)); opacity:.95; } }
+
+    .tiny { margin-top: 18px; text-align:center; color: var(--muted); font-size: 11px; }
+
+    @media (min-width: 520px) {
+      .card { padding: 34px 30px 27px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; transition-duration: .01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <div id="hearts" aria-hidden="true"></div>
+  <div id="confetti" aria-hidden="true"></div>
+
+  <main class="app">
+    <section class="card" id="card">
+      <div class="topline">
+        <span class="badge">💌 Eine kleine Überraschung</span>
+        <span class="progress"><i id="progressBar"></i></span>
+      </div>
+
+      <section class="screen active" data-screen="question">
+        <div class="hero">
+          <div class="heart">💗</div>
+          <h1>Ich habe da eine kleine Frage an dich …</h1>
+          <p class="lead">Keine langen Texte, kein kompliziertes Formular. Nur ein paar kleine Entscheidungen. 😊</p>
+          <div class="question">Möchtest du mal etwas mit mir unternehmen?</div>
+        </div>
+
+        <div class="button-row">
+          <button class="primary" id="yesButton">Ja, gerne 💕</button>
+          <button class="secondary" id="quickYesButton">Ja 😊</button>
+        </div>
+
+        <div id="noStage" aria-label="Bereich für den Nein-Button">
+          <button class="secondary" id="noButton">Nein 🙈</button>
+        </div>
+        <p class="hint" id="noHint">Das kleine „Nein“ hat heute offenbar eigene Pläne. 😄</p>
+      </section>
+
+      <section class="screen" data-screen="date">
+        <h2 class="mini-title">Dann machen wir es konkret. 🥰</h2>
+        <p class="mini-text">Welcher Tag würde dir am besten gefallen?</p>
+        <div class="choices" id="dateChoices"></div>
+        <div class="nav"><button class="ghost" id="dateBack">← Zurück</button><button class="primary" id="dateNext">Weiter →</button></div>
+      </section>
+
+      <section class="screen" data-screen="time">
+        <h2 class="mini-title">Und wann? ⏰</h2>
+        <p class="mini-text">Such dir einfach die Uhrzeit aus, die dir am besten passt.</p>
+        <div class="choices" id="timeChoices"></div>
+        <div class="nav"><button class="ghost" id="timeBack">← Zurück</button><button class="primary" id="timeNext">Weiter →</button></div>
+      </section>
+
+      <section class="screen" data-screen="activity">
+        <h2 class="mini-title">Was sollen wir machen? ✨</h2>
+        <p class="mini-text">Du musst nichts schreiben – klick einfach das an, worauf du Lust hast.</p>
+        <div class="choices" id="activityChoices"></div>
+        <div class="nav"><button class="ghost" id="activityBack">← Zurück</button><button class="primary" id="activityNext">Das klingt gut 💗</button></div>
+      </section>
+
+      <section class="screen" data-screen="final">
+        <div class="final-heart">💖</div>
+        <div class="hero">
+          <h1>Dann haben wir ein Date. 🥰</h1>
+          <p class="lead">Ich freue mich schon. Hier ist unser kleiner Plan:</p>
+        </div>
+        <div class="summary" id="summary"></div>
+        <div class="nav"><button class="ghost" id="finalBack">Ändern</button><button class="primary" id="shareButton">Per WhatsApp teilen 💬</button></div>
+        <p class="tiny">Der WhatsApp-Button öffnet WhatsApp mit einer fertigen Nachricht. Du musst nichts tippen.</p>
+      </section>
+
+      <section class="screen" data-screen="nope">
+        <div class="nope">
+          <div class="nope-icon">🙈</div>
+          <h2 class="mini-title">Okay, verstanden. ❤️</h2>
+          <p class="mini-text">Dann lassen wir es dabei – ohne Überreden. Vielleicht gibt es ja irgendwann eine andere Gelegenheit. 😊</p>
+          <button class="secondary" id="restartButton">Nochmal ansehen</button>
+        </div>
+      </section>
+    </section>
+  </main>
+
+  <script>
+    const screens = [...document.querySelectorAll('.screen')];
+    const progressBar = document.getElementById('progressBar');
+    const noButton = document.getElementById('noButton');
+    const noStage = document.getElementById('noStage');
+    const noHint = document.getElementById('noHint');
+    const state = { date: null, time: null, activity: null, noClicks: 0 };
+
+    const activities = [
+      ['☕', 'Café & quatschen'],
+      ['🍝', 'Zusammen essen gehen'],
+      ['🎬', 'Kino'],
+      ['🌳', 'Spazieren & reden'],
+      ['🎳', 'Etwas Lustiges unternehmen'],
+      ['✨', 'Überraschung – du entscheidest nicht 😄']
+    ];
+
+    const times = ['15:00 Uhr', '16:30 Uhr', '18:00 Uhr', '19:30 Uhr', '21:00 Uhr'];
+
+    function formatGermanDate(date) {
+      return new Intl.DateTimeFormat('de-DE', { weekday: 'long', day: '2-digit', month: '2-digit' }).format(date);
+    }
+
+    function buildDates() {
+      const base = new Date();
+      base.setHours(12, 0, 0, 0);
+      const options = [0, 1, 2, 6, 7].map(offset => {
+        const d = new Date(base);
+        d.setDate(base.getDate() + offset);
+        return { offset, value: d, label: offset === 0 ? 'Heute' : offset === 1 ? 'Morgen' : formatGermanDate(d) };
+      });
+      return options;
+    }
+
+    function renderChoices() {
+      const dates = document.getElementById('dateChoices');
+      dates.innerHTML = buildDates().map(({value, label}) => `
+        <button class="choice" data-value="${value.toISOString()}">
+          <span class="left"><span class="icon">📅</span><span>${capitalize(label)}</span></span><span class="check">✓</span>
+        </button>`).join('');
+
+      const timeWrap = document.getElementById('timeChoices');
+      timeWrap.innerHTML = times.map(time => `
+        <button class="choice" data-value="${time}">
+          <span class="left"><span class="icon">⏰</span><span>${time}</span></span><span class="check">✓</span>
+        </button>`).join('');
+
+      const activityWrap = document.getElementById('activityChoices');
+      activityWrap.innerHTML = activities.map(([icon, text]) => `
+        <button class="choice" data-value="${escapeAttr(text)}">
+          <span class="left"><span class="icon">${icon}</span><span>${text}</span></span><span class="check">✓</span>
+        </button>`).join('');
+
+      dates.addEventListener('click', e => selectChoice(e, 'date'));
+      timeWrap.addEventListener('click', e => selectChoice(e, 'time'));
+      activityWrap.addEventListener('click', e => selectChoice(e, 'activity'));
+    }
+
+    function escapeAttr(s) { return s.replaceAll('&', '&amp;').replaceAll('"', '&quot;').replaceAll('<', '&lt;').replaceAll('>', '&gt;'); }
+    function capitalize(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
+
+    function selectChoice(event, key) {
+      const btn = event.target.closest('.choice');
+      if (!btn) return;
+      state[key] = btn.dataset.value;
+      btn.parentElement.querySelectorAll('.choice').forEach(b => b.classList.remove('selected'));
+      btn.classList.add('selected');
+      const selected = btn.parentElement.querySelector('.choice.selected');
+      selected?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    function goto(name) {
+      screens.forEach(s => s.classList.toggle('active', s.dataset.screen === name));
+      const map = { question: 1, date: 2, time: 3, activity: 4, final: 5, nope: 5 };
+      progressBar.style.width = `${(map[name] / 5) * 100}%`;
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function hearts(count = 18) {
+      const wrap = document.getElementById('hearts');
+      const icons = ['♥','♡','❤','💗','💖','💕'];
+      for (let i = 0; i < count; i++) {
+        const el = document.createElement('div');
+        el.className = 'floating-heart';
+        el.textContent = icons[Math.floor(Math.random() * icons.length)];
+        el.style.left = `${Math.random() * 100}vw`;
+        el.style.bottom = `${-30 - Math.random() * 40}px`;
+        el.style.setProperty('--size', `${14 + Math.random() * 25}px`);
+        el.style.setProperty('--duration', `${3.2 + Math.random() * 3.5}s`);
+        el.style.animationDelay = `${Math.random() * .9}s`;
+        wrap.appendChild(el);
+        setTimeout(() => el.remove(), 8000);
+      }
+    }
+
+    function confetti(count = 80) {
+      const wrap = document.getElementById('confetti');
+      for (let i = 0; i < count; i++) {
+        const el = document.createElement('i');
+        el.className = 'confetti-piece';
+        el.style.left = `${50 + (Math.random() - .5) * 22}vw`;
+        el.style.top = `${5 + Math.random() * 15}vh`;
+        el.style.background = `hsl(${330 + Math.random() * 35}, ${65 + Math.random() * 25}%, ${62 + Math.random() * 18}%)`;
+        el.style.setProperty('--dx', `${(Math.random() - .5) * 90}vw`);
+        el.style.setProperty('--rot', `${(Math.random() - .5) * 1300}deg`);
+        el.style.animationDelay = `${Math.random() * .25}s`;
+        wrap.appendChild(el);
+        setTimeout(() => el.remove(), 2300);
+      }
+    }
+
+    function celebrate() {
+      hearts(28);
+      confetti(90);
+      setTimeout(() => hearts(18), 500);
+    }
+
+    function moveNoButton() {
+      state.noClicks += 1;
+      if (state.noClicks >= 3) {
+        goto('nope');
+        return;
+      }
+      const stageRect = noStage.getBoundingClientRect();
+      const btnRect = noButton.getBoundingClientRect();
+      const padding = 10;
+      const maxX = Math.max(padding, stageRect.width - btnRect.width - padding);
+      const maxY = Math.max(padding, stageRect.height - btnRect.height - padding);
+      const x = padding + Math.random() * (maxX - padding);
+      const y = padding + Math.random() * (maxY - padding);
+      noButton.style.left = `${x}px`;
+      noButton.style.top = `${y}px`;
+      noButton.style.transform = 'none';
+      noHint.textContent = state.noClicks === 1 ? 'Okay … einen Versuch gab es. 😄' : 'Noch ein Versuch? Das kleine „Nein“ wird nervös. 😂';
+    }
+
+    function require(key, next) {
+      if (!state[key]) {
+        const target = document.querySelector(`[data-screen="${key === 'date' ? 'date' : key}"]`);
+        if (target) target.animate([{transform:'translateX(-4px)'},{transform:'translateX(4px)'},{transform:'translateX(-3px)'},{transform:'translateX(0)'}], {duration:250});
+        return;
+      }
+      goto(next);
+    }
+
+    function renderSummary() {
+      const date = new Date(state.date);
+      document.getElementById('summary').innerHTML = `
+        <h3>Unser kleiner Plan ✨</h3>
+        <div class="summary-line"><span>📅 Tag</span><span>${capitalize(formatGermanDate(date))}</span></div>
+        <div class="summary-line"><span>⏰ Uhrzeit</span><span>${state.time}</span></div>
+        <div class="summary-line"><span>💗 Unternehmung</span><span>${state.activity}</span></div>`;
+    }
+
+    function buildShareText() {
+      const date = new Date(state.date);
+      return `Ich habe gerade deine kleine Umfrage ausgefüllt. 💗\n\n📅 ${capitalize(formatGermanDate(date))}\n⏰ ${state.time}\n✨ ${state.activity}\n\nScheint, als hätten wir ein Date. 🥰`;
+    }
+
+    document.getElementById('yesButton').addEventListener('click', () => { celebrate(); goto('date'); });
+    document.getElementById('quickYesButton').addEventListener('click', () => { celebrate(); goto('date'); });
+    noButton.addEventListener('click', moveNoButton);
+
+    document.getElementById('dateBack').addEventListener('click', () => goto('question'));
+    document.getElementById('dateNext').addEventListener('click', () => require('date', 'time'));
+    document.getElementById('timeBack').addEventListener('click', () => goto('date'));
+    document.getElementById('timeNext').addEventListener('click', () => require('time', 'activity'));
+    document.getElementById('activityBack').addEventListener('click', () => goto('time'));
+    document.getElementById('activityNext').addEventListener('click', () => {
+      if (!state.activity) return;
+      renderSummary();
+      goto('final');
+      celebrate();
+    });
+    document.getElementById('finalBack').addEventListener('click', () => goto('activity'));
+    document.getElementById('restartButton').addEventListener('click', () => {
+      state.noClicks = 0;
+      noButton.style.left = '50%'; noButton.style.top = '50%'; noButton.style.transform = 'translate(-50%, -50%)';
+      noHint.textContent = 'Das kleine „Nein“ hat heute offenbar eigene Pläne. 😄';
+      goto('question');
+    });
+
+    document.getElementById('shareButton').addEventListener('click', async () => {
+      const text = buildShareText();
+      if (navigator.share) {
+        try { await navigator.share({ title: 'Unser kleines Date 💗', text }); return; } catch (_) {}
+      }
+      const url = 'https://wa.me/?text=' + encodeURIComponent(text);
+      window.open(url, '_blank', 'noopener,noreferrer');
+    });
+
+    renderChoices();
+    setInterval(() => hearts(2), 2600);
+  </script>
+</body>
+</html>
